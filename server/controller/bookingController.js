@@ -1,3 +1,4 @@
+import transporter from "../config/nodemailer.js";
 import Booking from "../model/Booking.js"
 import Hotel from "../model/Hotel.js";
 import Room from "../model/Room.js";
@@ -21,7 +22,7 @@ const checkAvailability = async ({ checkInDate, checkOutDate, room }) => {
 // API to Check Room Availability
 export const checkAvailabilityAPI = async (req, res) => {
     try {
-        const { room, checkInDate, checkOutDate } = req.body;
+        const { checkInDate, checkOutDate, room } = req.body;
         const isAvailable = await checkAvailability({ checkInDate, checkOutDate, room });
         res.json({
             success: true,
@@ -65,6 +66,28 @@ export const createBooking = async (req, res) => {
             checkOutDate,
             totalPrice,
         })
+        // Send confirmation email to user
+        const mailOptions = {
+            from: process.env.SMTP_USER,
+            to: req.user.email,
+            subject: "Booking Confirmation",
+            html: `
+                <h2>Your Booking Details</h2>
+                <p>Dear: ${req.user.username},</p>
+                <p>Thank you for booking with us! Here are your booking details: </p>
+                <ul>
+                    <li><strong>Booking ID:</strong> ${booking._id}</li>
+                    <li><strong>Hotel:</strong> ${roomData.hotel.name}</li>
+                    <li><strong>Location:</strong> ${roomData.hotel.address}</li>
+                    <li><strong>Check-in Date:</strong> ${booking.checkInDate.toDateString()}</li>
+                    <li><strong>Check-out Date:</strong> ${booking.checkOutDate.toDateString()}</li>
+                    <li><strong>Total Price:</strong> $${booking.totalPrice.toFixed(2)}</li>
+                </ul>
+                <p>We look forward to welcoming you!</p>
+                <p>Best regards,</p>
+            `
+        }
+        await transporter.sendMail(mailOptions)
         res.json({
             success: true,
             message: "Booking created successfully"
