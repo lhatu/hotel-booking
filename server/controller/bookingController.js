@@ -68,8 +68,8 @@ export const createBooking = async (req, res) => {
         })
         // Send confirmation email to user
         const mailOptions = {
-            from: process.env.SMTP_USER,
-            to: req.user.email,
+            from: '"Quick Stay" <no-reply@quickstay.com>',
+            to: req.users.email,
             subject: "Booking Confirmation",
             html: `
                 <h2>Your Booking Details</h2>
@@ -83,7 +83,7 @@ export const createBooking = async (req, res) => {
                     <li><strong>Check-out Date:</strong> ${booking.checkOutDate.toDateString()}</li>
                     <li><strong>Total Price:</strong> $${booking.totalPrice.toFixed(2)}</li>
                 </ul>
-                <p>We look forward to welcoming you!</p>
+                <p>We look forward to welcoming you! If you have any question</p>
                 <p>Best regards,</p>
             `
         }
