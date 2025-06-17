@@ -83,7 +83,7 @@ export const createBooking = async (req, res) => {
                     <li><strong>Check-out Date:</strong> ${booking.checkOutDate.toDateString()}</li>
                     <li><strong>Total Price:</strong> $${booking.totalPrice.toFixed(2)}</li>
                 </ul>
-                <p>We look forward to welcoming you!</p>
+                <p>We look forward to welcoming you! If you have any question, please contact us.</p>
                 <p>Best regards,</p>
             `
         }
